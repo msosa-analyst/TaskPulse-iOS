@@ -17,8 +17,8 @@ final class LoginRouter: LoginRouterProtocol {
     
     func navigateToCreateAccount() {
         let createAccountVC = UIViewController()
-        createAccountVC.title = "Create Account"
-        createAccountVC.view.backgroundColor = .systemBlue
+        
+        createAccountVC.view = SignUpViewFactory.create()
         navigationController?.pushViewController(createAccountVC, animated: true)
     }
     
