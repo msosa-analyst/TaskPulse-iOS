@@ -8,30 +8,26 @@
 import UIKit
 
 class SignUpView: UIView{
-    var topWave: TopWaveView!
-    var bottomWave: BottomWaveView!
-    var scrollContainer: DesignScrollContainerView!
-    var logo: UIImageView!
-    var titleLabel: UILabel!
-    var subTitleLabel: UILabel!
-    var formStackView: UIStackView!
+
     var nameTextField: DesignTextField!
     var lastNameTextField: DesignTextField!
     var emailTextField: DesignTextField!
     var passwordTextField: DesignTextField!
+    
     var minLengthLabel: DesignPasswordRequirementLabel!
-    var uppercaseLabel: DesignPasswordRequirementLabel!
-    var lowercaseLabel: DesignPasswordRequirementLabel!
+    var upperCaseLabel: DesignPasswordRequirementLabel!
+    var lowerCaseLabel: DesignPasswordRequirementLabel!
     var numberLabel: DesignPasswordRequirementLabel!
-    var requirementStackView: UIStackView!
+    
+
     var confirmPassword: DesignTextField!
-    var buttonStackView: UIStackView!
     var continueGoogleButton: DesignButton!
     var continueAppleButton: DesignButton!
     var createAccount: DesignButton!
+    
+    
     var loginButton: UIButton!
-    var hasAccountLabel: UILabel!
-    var promptStackView: UIStackView!
+
     
     
     override init(frame: CGRect) {
