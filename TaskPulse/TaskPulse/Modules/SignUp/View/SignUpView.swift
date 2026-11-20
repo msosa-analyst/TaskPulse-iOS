@@ -7,20 +7,19 @@
 
 import UIKit
 
-class SignUpView: UIView{
+class SignUpView: UIView, SignUpViewProtocol{
 
     var nameTextField: DesignTextField!
     var lastNameTextField: DesignTextField!
     var emailTextField: DesignTextField!
     var passwordTextField: DesignTextField!
+    var confirmPassword: DesignTextField!
     
-    var minLengthLabel: DesignPasswordRequirementLabel!
+    var minLenghtLabel: DesignPasswordRequirementLabel!
     var upperCaseLabel: DesignPasswordRequirementLabel!
     var lowerCaseLabel: DesignPasswordRequirementLabel!
     var numberLabel: DesignPasswordRequirementLabel!
     
-
-    var confirmPassword: DesignTextField!
     var continueGoogleButton: DesignButton!
     var continueAppleButton: DesignButton!
     var createAccount: DesignButton!
@@ -28,8 +27,6 @@ class SignUpView: UIView{
     
     var loginButton: UIButton!
 
-    
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         Setup()
@@ -46,5 +43,35 @@ class SignUpView: UIView{
             blue: 0x20 / 255.0,
             alpha: 1.0
         )
+    }
+
+    func set(minLenghtLabel: Bool) {
+        self.minLenghtLabel.configure(isCompleted: minLenghtLabel)
+    }
+    
+    func set(upperCaseLabel: Bool) {
+        self.upperCaseLabel.configure(isCompleted: upperCaseLabel)
+    }
+    
+    func set(lowerCaseLabel: Bool) {
+        self.lowerCaseLabel.configure(isCompleted: lowerCaseLabel)
+    }
+    
+    func set(numberLabel: Bool) {
+        self.numberLabel.configure(isCompleted: numberLabel)
+    }
+    
+    func set(isFilled: Bool) {
+        var config = createAccount.configuration ?? UIButton.Configuration.filled()
+        
+        if isFilled {
+            config.baseBackgroundColor = .systemBlue
+            config.baseForegroundColor = .white
+        } else {
+            config.baseBackgroundColor = UIColor(red: 0x1E / 255.0, green: 0x29 / 255.0, blue: 0x3B / 255.0, alpha: 1.0)
+            config.baseForegroundColor = UIColor.lightGray
+        }
+        
+        createAccount.configuration = config
     }
 }

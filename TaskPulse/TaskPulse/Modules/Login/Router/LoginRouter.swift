@@ -16,10 +16,9 @@ final class LoginRouter: LoginRouterProtocol {
     }
     
     func navigateToCreateAccount() {
-        let createAccountVC = UIViewController()
+        let signUpVC = SignUpModuleBuilder.build(navigationController: navigationController)
         
-        createAccountVC.view = SignUpViewFactory.create()
-        navigationController?.pushViewController(createAccountVC, animated: true)
+        navigationController?.pushViewController(signUpVC, animated: true)
     }
     
     func navigateToHome() {

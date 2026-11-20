@@ -14,9 +14,10 @@ fileprivate struct ActionFactoryImplementation: ActionViewProvidable{
     static func createAction(in requirementStackView: UIStackView, contentView: UIView) -> (confirmPassword: DesignTextField, buttonStackView: UIStackView, googleButton: DesignButton, appleButton: DesignButton, createAccount: DesignButton) {
         let confirmPassword = ConfirmPasswordFactory.create(placeholder: "Repetir contraseña", iconName: "lock.fill", contentView: contentView, requirementStackView: requirementStackView)
         let buttonStackView = ButtonStackViewFactory.create(confirmPassword: confirmPassword, contentView: contentView)
-        let googleButton = ButtonFactory.create(setTitle: "Continua con google", iconSystemName: "google_icon", isFilled: false, buttonStackView: buttonStackView)
-        let appleButton = ButtonFactory.create(setTitle: "Continua con apple", iconSystemName: "apple.logo", isFilled: false, buttonStackView: buttonStackView)
-        let createAccount = ButtonFactory.create(setTitle: "Crear cuenta", iconSystemName: "none", isFilled: true, buttonStackView: buttonStackView)
+        let googleButton = ButtonFactory.create(setTitle: "Continua con google", iconSystemName: "google_icon", buttonStackView: buttonStackView)
+        let appleButton = ButtonFactory.create(setTitle: "Continua con apple", iconSystemName: "apple.logo", buttonStackView: buttonStackView)
+        let createAccount = CreateButtonFactory.create(setTitle: "Crear cuenta", buttonStackView: buttonStackView)
+        
         return (confirmPassword, buttonStackView, googleButton, appleButton, createAccount)
     }
 }
@@ -52,26 +53,20 @@ fileprivate struct ConfirmPasswordFactory{
 
 
 fileprivate struct ButtonFactory{
-    static func create(setTitle: String, iconSystemName: String, isFilled: Bool, buttonStackView: UIStackView) -> DesignButton{
+    static func create(setTitle: String, iconSystemName: String, buttonStackView: UIStackView) -> DesignButton{
         let button = DesignButton()
         
-        if isFilled {
-            let config = UIButton.Configuration.filled()
-            button.configuration = config
+        var config = button.configuration ?? UIButton.Configuration.plain()
+        if iconSystemName == "google_icon"{
+            config.image = UIImage(named: iconSystemName)
         }
         else {
-            var config = button.configuration ?? UIButton.Configuration.plain()
-            if iconSystemName == "google_icon"{
-                config.image = UIImage(named: iconSystemName)
-            }
-            else {
-                let symbolConfig = UIImage.SymbolConfiguration(hierarchicalColor: .white)
-                config.image = UIImage(systemName: iconSystemName, withConfiguration: symbolConfig)
-            }
-            config.imagePlacement = .leading
-            config.imagePadding = 15.0
-            button.configuration = config
+            let symbolConfig = UIImage.SymbolConfiguration(hierarchicalColor: .white)
+            config.image = UIImage(systemName: iconSystemName, withConfiguration: symbolConfig)
         }
+        config.imagePlacement = .leading
+        config.imagePadding = 15.0
+        button.configuration = config
         
         button.setTitle(setTitle, for: .normal)
         button.setTitleColor(.white, for: .normal)
@@ -82,6 +77,26 @@ fileprivate struct ButtonFactory{
         button.heightAnchor.constraint(equalToConstant: 45).isActive = true
         
         return button
+    }
+}
+
+fileprivate struct CreateButtonFactory {
+    static func create(setTitle: String, buttonStackView: UIStackView) -> DesignButton {
+        let createButton = DesignButton()
+        
+        var config = UIButton.Configuration.filled()
+        config.baseBackgroundColor = UIColor(red: 0x1E / 255.0, green: 0x29 / 255.0, blue: 0x3B / 255.0, alpha: 1.0)
+        config.baseForegroundColor = UIColor.lightGray
+        createButton.configuration = config
+        
+        createButton.setTitle(setTitle, for: .normal)
+        createButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 17)
+        createButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        buttonStackView.addArrangedSubview(createButton)
+        createButton.heightAnchor.constraint(equalToConstant: 45).isActive = true
+        
+        return createButton
     }
 }
 

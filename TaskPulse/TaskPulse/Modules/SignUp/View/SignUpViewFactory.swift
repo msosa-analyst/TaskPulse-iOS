@@ -25,7 +25,7 @@ class SignUpViewFactory{
         signUpView.passwordTextField = form.passwordTextField
         
         let requirement = RequirementComponentBuilder.provider.createRequirement(in: form.formStackView, contentView: contentView)
-        signUpView.minLengthLabel = requirement.minLenghtLabel
+        signUpView.minLenghtLabel = requirement.minLenghtLabel
         signUpView.upperCaseLabel = requirement.upperCaseLabel
         signUpView.lowerCaseLabel = requirement.lowerCaseLabel
         signUpView.numberLabel = requirement.numberLabel

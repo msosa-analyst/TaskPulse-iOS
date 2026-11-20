@@ -10,6 +10,8 @@ import UIKit
 @IBDesignable
 final class DesignPasswordRequirementLabel: UILabel {
     
+    private var requirementText: String = ""
+    
     private let activeColor = UIColor(
         red: 0x10 / 255.0,
         green: 0xB9 / 255.0,
@@ -40,7 +42,12 @@ final class DesignPasswordRequirementLabel: UILabel {
         textAlignment = .left
     }
     
-    func configure(with text: String, isCompleted: Bool) {
+    func configure(with text: String? = nil, isCompleted: Bool) {
+        
+        if let newText = text {
+                    requirementText = newText
+                }
+        
         let imageName = isCompleted ? "checkmark.circle.fill" : "circle"
         let colorToUse = isCompleted ? activeColor : inactiveColor
         
@@ -53,7 +60,7 @@ final class DesignPasswordRequirementLabel: UILabel {
         attachment.bounds = CGRect(x: 0, y: -2, width: 14, height: 14)
         
         let attributedString = NSMutableAttributedString(attachment: attachment)
-        attributedString.append(NSAttributedString(string: "  \(text)"))
+        attributedString.append(NSAttributedString(string: "  \(requirementText)"))
         
         self.attributedText = attributedString
         self.textColor = colorToUse
