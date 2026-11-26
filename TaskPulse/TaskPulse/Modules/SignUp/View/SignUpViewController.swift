@@ -6,16 +6,22 @@
 //
 
 import UIKit
+import FirebaseAuth
 
-class SignUpViewController: UIViewController{
-    private var _view: SignUpViewProtocol{
+final class SignUpViewController: UIViewController {
+    private var _view: SignUpViewProtocol {
         self.view as! SignUpViewProtocol
     }
     
     private let viewModel: SignUpViewModelProtocol
+    private let googleAuthService: GoogleAuthServiceProtocol
     
-    init(viewModel: SignUpViewModelProtocol) {
+    init(
+        viewModel: SignUpViewModelProtocol,
+        googleAuthService: GoogleAuthServiceProtocol = GoogleAuthService()
+    ) {
         self.viewModel = viewModel
+        self.googleAuthService = googleAuthService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -30,60 +36,74 @@ class SignUpViewController: UIViewController{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        
         _view.nameTextField.addTarget(self, action: #selector(nameDidChange), for: .editingChanged)
         _view.lastNameTextField.addTarget(self, action: #selector(nameDidChange), for: .editingChanged)
         _view.emailTextField.addTarget(self, action: #selector(emailDidChange), for: .editingChanged)
         _view.passwordTextField.addTarget(self, action: #selector(passwordDidChange), for: .editingChanged)
         _view.confirmPassword.addTarget(self, action: #selector(confirmPasswordDidChange), for: .editingChanged)
-
         
         _view.continueGoogleButton.addTarget(self, action: #selector(googleActionButtonTapped), for: .touchUpInside)
         _view.continueAppleButton.addTarget(self, action: #selector(appleActionButtonTapped), for: .touchUpInside)
         _view.createAccount.addTarget(self, action: #selector(createAccountActionButtonTapped), for: .touchUpInside)
         _view.loginButton.addTarget(self, action: #selector(loginActionButtonTapped), for: .touchUpInside)
         
-        viewModel.onValidationLength = { [weak self] isValid in self?._view.set(minLenghtLabel: isValid)}
-        viewModel.onValidationUpperCase = { [weak self] isValid in self?._view.set(upperCaseLabel: isValid)}
-        viewModel.onValidationLowerCase = { [weak self] isValid in self?._view.set(lowerCaseLabel: isValid)}
-        viewModel.onValidationNumber = { [weak self] isValid in self?._view.set(numberLabel: isValid)}
-        viewModel.onValidationActivateCreateButton = { [weak self] isValid in self?._view.set(isFilled: isValid)}
+        viewModel.onValidationLength = { [weak self] isValid in self?._view.set(minLenghtLabel: isValid) }
+        viewModel.onValidationUpperCase = { [weak self] isValid in self?._view.set(upperCaseLabel: isValid) }
+        viewModel.onValidationLowerCase = { [weak self] isValid in self?._view.set(lowerCaseLabel: isValid) }
+        viewModel.onValidationNumber = { [weak self] isValid in self?._view.set(numberLabel: isValid) }
+        viewModel.onValidationActivateCreateButton = { [weak self] isValid in self?._view.set(isFilled: isValid) }
     }
     
-    @objc private func nameDidChange(){
+    @objc private func nameDidChange() {
         let currentNameText = _view.nameTextField.text ?? ""
         let currentLastNameText = _view.lastNameTextField.text ?? ""
         viewModel.verifyValidName(currentNameText: currentNameText, currentLastNameText: currentLastNameText)
     }
     
-    @objc private func emailDidChange(){
+    @objc private func emailDidChange() {
         let currentEmailText = _view.emailTextField.text ?? ""
         viewModel.verifyValidEmail(currentEmailText: currentEmailText)
     }
     
-    @objc private func passwordDidChange(){
+    @objc private func passwordDidChange() {
         let currentText = _view.passwordTextField.text ?? ""
         viewModel.verifyValidPassword(currentText: currentText)
     }
     
-    @objc private func confirmPasswordDidChange(){
+    @objc private func confirmPasswordDidChange() {
         let currentConfirmPasswordText = _view.confirmPassword.text ?? ""
         viewModel.verifyValidConfirmPassword(currentConfirmPasswordText: currentConfirmPasswordText)
     }
     
-    @objc private func googleActionButtonTapped(){
+    @objc private func googleActionButtonTapped() {
+        googleAuthService.signIn(from: self) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let data):
+                    self?.viewModel.handleGoogleSignInSuccess(
+                        uid: data.user.uid,
+                        email: data.email,
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        fullName: data.fullName
+                    )
+                case .failure(let error):
+                    if error is GoogleAuthError { return }
+                    self?.viewModel.handleGoogleSignInFailure(error)
+                }
+            }
+        }
+    }
+    
+    @objc private func appleActionButtonTapped() {
+        // Pendiente: requiere cuenta de Apple Developer de pago para habilitar la capability
+    }
+    
+    @objc private func createAccountActionButtonTapped() {
         
     }
     
-    @objc private func appleActionButtonTapped(){
-        
-    }
-    
-    @objc private func createAccountActionButtonTapped(){
-        
-    }
-    
-    @objc private func loginActionButtonTapped(){
+    @objc private func loginActionButtonTapped() {
         viewModel.navigateToLogin()
     }
 }

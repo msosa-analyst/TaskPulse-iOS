@@ -9,4 +9,5 @@ import UIKit
 
 protocol SignUpRouterProtocol{
     func backToLogin()
+    func didCompleteSignUp()
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SignUpViewModel: SignUpViewModelProtocol {
+final class SignUpViewModel: SignUpViewModelProtocol {
     
     private let router: SignUpRouterProtocol
     
@@ -19,8 +19,8 @@ class SignUpViewModel: SignUpViewModelProtocol {
     private var savePassword: String = ""
     private var saveConfirmPassword: String = ""
     
-    var onValidationError: ((String) ->Void)?
-    var onValidationLength: ((Bool) ->Void)?
+    var onValidationError: ((String) -> Void)?
+    var onValidationLength: ((Bool) -> Void)?
     var onValidationUpperCase: ((Bool) -> Void)?
     var onValidationLowerCase: ((Bool) -> Void)?
     var onValidationNumber: ((Bool) -> Void)?
@@ -43,12 +43,10 @@ class SignUpViewModel: SignUpViewModelProtocol {
     }
     
     func verifyValidPassword(currentText: String) {
-        
         let hasLength = currentText.hasValidMinimumLength()
         let hasUpperCase = currentText.hasUpperCase()
         let hasLowerCase = currentText.hasLowerCase()
         let hasNumber = currentText.hasNumber()
-        
         
         onValidationLength?(hasLength)
         onValidationUpperCase?(hasUpperCase)
@@ -68,6 +66,15 @@ class SignUpViewModel: SignUpViewModelProtocol {
     
     private func updateConfirmPasswordState() {
         checkConfirmPassword = (saveConfirmPassword == savePassword)
+    }
+    
+    func handleGoogleSignInSuccess(uid: String, email: String, firstName: String, lastName: String, fullName: String) {
+        // Aquí más adelante guardaremos el perfil en Firestore (uid, email, firstName, lastName, fullName)
+        router.didCompleteSignUp()
+    }
+    
+    func handleGoogleSignInFailure(_ error: Error) {
+        onValidationError?(error.localizedDescription)
     }
     
     private func evaluateCreateButtonState() {
